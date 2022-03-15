@@ -1,3 +1,6 @@
+import { DempwolfZolzer } from './model/models/dempwolf-zolzer';
+import { Koren } from './model/models/koren';
+import { TriodeModel } from './model/triode-model';
 import { Component } from '@angular/core';
 
 @Component({
@@ -6,5 +9,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'd3';
+  public model: TriodeModel;
+
+  /**
+   *
+   */
+  constructor() {
+    this.model = new Koren();
+    // this.model = new DempwolfZolzer();
+  }
 }
