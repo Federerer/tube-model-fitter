@@ -1,2 +1,10 @@
-<app-curve-chart [maxCurrent]=".009" [maxVoltage]="450" [model]="model"></app-curve-chart>
-<router-outlet></router-outlet>
+<div class="curves" (paste)="onPaste($event)" tabindex="0">
+  <img *ngIf="imageUrl" [src]="imageUrl" class="image">
+  <app-resize-box>
+    <app-curve-chart [maxCurrent]=".009" [maxVoltage]="450" [model]="model"></app-curve-chart>
+  </app-resize-box>
+</div>
+<div class="controls">
+  <label for="ex">Ex</label>
+  <input type="range" min="1" max="2" value="1.5" step="0.01" #in (input)="onChange(in.value)">
+</div>
