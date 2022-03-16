@@ -1,14 +1,25 @@
-import { Directive, ElementRef, OnDestroy } from '@angular/core';
-
+import { Directive, ElementRef, EventEmitter, OnDestroy, Output } from '@angular/core';
 @Directive({
   selector: '[appOnResize]'
 })
 export class OnResizeDirective implements OnDestroy {
 
-  constructor(private el: ElementRef) { }
+  private observer: ResizeObserver;
+
+  @Output() onResize = new EventEmitter<DOMRectReadOnly>();
+
+  constructor(private el: ElementRef) {
+    this.observer = new ResizeObserver(entries => {
+      for (let entry of entries) {
+        const cr = entry.contentRect;
+        this.onResize.emit(cr);
+      }
+    });
+    this.observer.observe(el.nativeElement);
+  }
 
   ngOnDestroy(): void {
-    throw new Error('Method not implemented.');
+    this.observer.disconnect();
   }
 
 }
