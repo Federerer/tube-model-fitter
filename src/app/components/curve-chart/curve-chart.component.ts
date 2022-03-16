@@ -1,35 +1,53 @@
 import { TriodeModel } from './../../model/triode-model';
-import { Component, Input, OnInit } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
-import { of } from 'rxjs';
-import { map } from 'd3';
+import { BehaviorSubject, combineLatest, filter, map, NEVER, of, Subject, switchMap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'app-curve-chart',
   templateUrl: './curve-chart.component.html',
   styleUrls: ['./curve-chart.component.scss']
 })
-export class CurveChartComponent implements OnInit {
+export class CurveChartComponent {
 
   @Input() public maxVoltage: number = 250;
   @Input() public maxCurrent: number = .1;
-  @Input() public model?: TriodeModel;
 
-  constructor() { }
+  private modelSubject = new BehaviorSubject<TriodeModel|null>(null);
+  private resizeSubject = new BehaviorSubject<{width: number, height: number}|null>(null);
 
-  ngOnInit(): void {
-    this.render();
+  @Input() public set model(value: TriodeModel) {
+    this.modelSubject.next(value);
+  };
+
+  @ViewChild('grid') elementView?: ElementRef<SVGElement>;
+
+  constructor() {
+    const x = this.modelSubject.pipe(
+      switchMap(model => model ? model.paramsChanged.asObservable().pipe(map(_ => model)) : NEVER),
+    );
+    combineLatest([x, this.resizeSubject]).pipe(filter(([model, size]) => !!model && !!size)).subscribe(([model, size]) => {
+      this.render(model, size!)
+    })
+   }
+
+  public OnResize(event: {width: number, height: number}) {
+    this.resizeSubject.next(event);
   }
 
-  public render() {
+  public render(model: TriodeModel, size: {width: number, height: number}) {
 
-    const model = this.model;
-    if (!model) {
+    const svgElement = this.elementView;
+    if (!model || !svgElement || !size) {
       return;
     }
 
-    const width = 800;
-    const height = 600;
+    const {width, height} = size;
+
+    const svg = d3.select(svgElement.nativeElement);
+
+    svg.selectAll("*").remove();
+
     const x = d3.scaleLinear()
       .domain([0, this.maxVoltage])
       .range([0, width]);
@@ -38,21 +56,14 @@ export class CurveChartComponent implements OnInit {
       .domain([0, this.maxCurrent])
       .range([height, 0]);
 
-    const svg = d3.select('svg#grid');
-
-    svg.attr("width", width)
-      .attr("height", height)
-      .attr("viewBox", [0, 0, width, height])
-      .attr("style", "padding: 20px; max-width: 100%; height: auto; height: intrinsic; overflow: visible");
-
     svg.append('g')
       .attr('class', 'grid')
       .attr("transform", `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickSize(-height));
+      .call(d3.axisBottom(x));
 
     svg.append('g')
       .attr('class', 'grid')
-      .call(d3.axisLeft(y).tickSize(-width));
+      .call(d3.axisLeft(y));
 
     const vgs = d3.range(1.2, -3, -.3);
 
