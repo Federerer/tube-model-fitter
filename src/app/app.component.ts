@@ -10,6 +10,7 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+
   public model: Koren;
 
   public imageUrl: SafeUrl = "";
@@ -26,18 +27,24 @@ export class AppComponent {
     this.model.ex = Number(val);
   }
 
-  onPaste(e: any) {
-    console.log(e);
-    const items = (e.clipboardData || e.originalEvent.clipboardData).items;
-    let blob = null;
+  onPaste(e: ClipboardEvent) {
+
+    const items = e.clipboardData?.items;
+
+    if(!items) {
+      return;
+    }
+
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
-        blob = item.getAsFile();
-        console.log(blob);
-        this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
-          URL.createObjectURL(blob)
-        );
+        const blob = item.getAsFile();
+        if (blob) {
+          this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
+            URL.createObjectURL(blob)
+          );
+        }
       }
     }
+
   }
 }
