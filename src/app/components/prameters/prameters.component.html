@@ -1,0 +1,4 @@
+<div *ngFor="let param of parameters">
+  <label >{{param.name}}</label>
+  <input type="range" min="{{param.default / 2}}" max="{{param.default * 2}}" value="{{param.default}}" step="any" #in (input)="onChange(param.key, in.value)">
+</div>
