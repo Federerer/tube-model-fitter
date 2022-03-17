@@ -11,20 +11,13 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class AppComponent {
 
-  public model: Koren;
+  public model: TriodeModel;
 
   public imageUrl: SafeUrl = "";
 
-  /**
-   *
-   */
   constructor(private sanitizer: DomSanitizer) {
-    this.model = new Koren();
-    // this.model = new DempwolfZolzer();
-  }
-
-  public onChange(val: any) {
-    this.model.ex = Number(val);
+    //this.model = new Koren();
+     this.model = new DempwolfZolzer();
   }
 
   onPaste(e: ClipboardEvent) {

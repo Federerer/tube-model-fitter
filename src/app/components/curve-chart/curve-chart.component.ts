@@ -65,7 +65,7 @@ export class CurveChartComponent {
       .attr('class', 'grid')
       .call(d3.axisLeft(y));
 
-    const vgs = d3.range(1.2, -3, -.3);
+    const vgs = d3.range(1.2, -4, -.5);
 
     const lines = vgs.map(vg =>
     ({

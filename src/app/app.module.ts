@@ -8,13 +8,15 @@ import { OnResizeDirective } from './directives/on-resize.directive';
 
 import { ResizableModule } from 'angular-resizable-element';
 import { ResizeBoxComponent } from './components/resize-box/resize-box.component';
+import { PrametersComponent } from './components/prameters/prameters.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CurveChartComponent,
     OnResizeDirective,
-    ResizeBoxComponent
+    ResizeBoxComponent,
+    PrametersComponent
   ],
   imports: [
     BrowserModule,
