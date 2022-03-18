@@ -1,7 +1,7 @@
 import { TriodeModel } from './../../model/triode-model';
 import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
-import { BehaviorSubject, combineLatest, filter, map, NEVER, of, Subject, switchMap, withLatestFrom } from 'rxjs';
+import { BehaviorSubject, combineLatest, filter, map, merge, NEVER, of, startWith, Subject, switchMap, withLatestFrom } from 'rxjs';
 
 @Component({
   selector: 'app-curve-chart',
@@ -10,50 +10,67 @@ import { BehaviorSubject, combineLatest, filter, map, NEVER, of, Subject, switch
 })
 export class CurveChartComponent {
 
-  @Input() public maxVoltage: number = 250;
-  @Input() public maxCurrent: number = .1;
+  private _maxVoltage: number = 250;
+  @Input() public set maxVoltage(value: number) {
+    this._maxVoltage = value;
+    this.render();
+  };
 
-  private modelSubject = new BehaviorSubject<TriodeModel|null>(null);
-  private resizeSubject = new BehaviorSubject<{width: number, height: number}|null>(null);
+  private _maxCurrent: number = .1;
+  @Input() public set maxCurrent(value: number) {
+    this._maxCurrent = value;
+    this.render();
+  };
+
+
+  private _model = new BehaviorSubject<TriodeModel | null>(null);
+  private _size = new BehaviorSubject<{ width: number, height: number } | null>(null);
 
   @Input() public set model(value: TriodeModel) {
-    this.modelSubject.next(value);
+    this._model.next(value);
   };
 
   @ViewChild('grid') elementView?: ElementRef<SVGElement>;
 
-  constructor() {
-    const x = this.modelSubject.pipe(
-      switchMap(model => model ? model.paramsChanged.asObservable().pipe(map(_ => model)) : NEVER),
-    );
-    combineLatest([x, this.resizeSubject]).pipe(filter(([model, size]) => !!model && !!size)).subscribe(([model, size]) => {
-      this.render(model, size!)
-    })
-   }
-
-  public OnResize(event: {width: number, height: number}) {
-    this.resizeSubject.next(event);
+  ngAfterViewInit() {
+    this.render();
   }
 
-  public render(model: TriodeModel, size: {width: number, height: number}) {
+  constructor() {
+    merge(
+      this._model.pipe(
+        switchMap(model => model ? model.paramsChanged.pipe(startWith(undefined)) : NEVER),
+      ),
+      this._size
+    ).subscribe(() => this.render());
+  }
+
+  public OnResize(event: { width: number, height: number }) {
+    this._size.next(event);
+  }
+
+  public render() {
 
     const svgElement = this.elementView;
+    const model = this._model?.value;
+    const size = this._size?.value;
+
     if (!model || !svgElement || !size) {
       return;
     }
 
-    const {width, height} = size;
+    const { width, height } = size;
 
     const svg = d3.select(svgElement.nativeElement);
 
     svg.selectAll("*").remove();
 
     const x = d3.scaleLinear()
-      .domain([0, this.maxVoltage])
+      .domain([0, this._maxVoltage])
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([0, this.maxCurrent])
+      .domain([0, this._maxCurrent])
       .range([height, 0]);
 
     svg.append('g')
@@ -71,7 +88,7 @@ export class CurveChartComponent {
     ({
       vg,
       fn: d3.line()
-        .defined(v => v[1] <= this.maxCurrent)
+        .defined(v => v[1] <= this._maxCurrent)
         .x(v => x(v[0]))
         .y(v => y(v[1])),
       color: vg > 0 ? 'red' : 'blue'
@@ -79,12 +96,14 @@ export class CurveChartComponent {
 
     const lineArea = svg.append('g');
 
+    const pts = d3.range(0, this._maxVoltage + 1, 5);
+
     for (const line of lines) {
       lineArea.append("path")
         .attr("fill", "none")
         .attr("stroke", line.color)
-        .attr("stroke-width", 1)
-        .attr("d", line.fn(d3.range(this.maxVoltage + 1).map(v => [v, model.getPlateCurrent(line.vg, v)])));
+        .attr("stroke-width", 2)
+        .attr("d", line.fn(pts.map(v => [v, model.getPlateCurrent(line.vg, v)])));
     }
   }
 

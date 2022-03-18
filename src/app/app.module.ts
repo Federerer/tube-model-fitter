@@ -9,6 +9,7 @@ import { OnResizeDirective } from './directives/on-resize.directive';
 import { ResizableModule } from 'angular-resizable-element';
 import { ResizeBoxComponent } from './components/resize-box/resize-box.component';
 import { PrametersComponent } from './components/prameters/prameters.component';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { PrametersComponent } from './components/prameters/prameters.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    ResizableModule
+    ResizableModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

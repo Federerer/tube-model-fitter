@@ -1,9 +1,23 @@
 <div class="curves" (paste)="onPaste($event)" tabindex="0">
-  <img *ngIf="imageUrl" [src]="imageUrl" class="image">
+  <img *ngIf="imageUrl" [src]="imageUrl" class="image" [style.opacity]="opacity">
   <app-resize-box>
-    <app-curve-chart [maxCurrent]=".006" [maxVoltage]="400" [model]="model"></app-curve-chart>
+    <app-curve-chart [maxCurrent]="maxCurrent" [maxVoltage]="maxVoltage" [model]="model"></app-curve-chart>
   </app-resize-box>
 </div>
 <div class="controls">
+  <h3>Model parameters</h3>
   <app-prameters [model]="model"></app-prameters>
+  <h3>Image settings</h3>
+  <div>
+    <label>Opacity</label>
+    <input type="range" step="any" min="0" max="1"  [(ngModel)]="opacity">
+  </div>
+  <div>
+    <label>Maximum voltage</label>
+    <input type="number" [(ngModel)]="maxVoltage">
+  </div>
+  <div>
+    <label>Maximum current</label>
+    <input type="number" [(ngModel)]="maxCurrent">
+  </div>
 </div>

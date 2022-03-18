@@ -12,12 +12,14 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 export class AppComponent {
 
   public model: TriodeModel;
-
+  public opacity: number = 1;
   public imageUrl: SafeUrl = "";
+  public maxVoltage: number = 400;
+  public maxCurrent: number = .009;
 
   constructor(private sanitizer: DomSanitizer) {
-    //this.model = new Koren();
-     this.model = new DempwolfZolzer();
+    this.model = new Koren();
+    //  this.model = new DempwolfZolzer();
   }
 
   onPaste(e: ClipboardEvent) {
