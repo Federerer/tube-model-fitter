@@ -1,3 +1,4 @@
+import { mode } from 'd3';
 import { ModelParameter, ParameterMetadata } from './models/interfaces/model-parameter';
 import { EventEmitter } from "@angular/core";
 import 'reflect-metadata';
@@ -7,28 +8,23 @@ export interface TriodeModel {
   getPlateCurrent(vg: number, vp: number): number;
   paramsChanged: EventEmitter<void>;
   [index: string | symbol]: any;
-  getParameters(): ParameterMetadata[]
 }
 
 export abstract class TriodeModelBase implements TriodeModel {
 
   abstract name: string;
 
-  private parameters: ParameterMetadata[];
-
-  constructor() {
-    this.parameters = Reflect.getMetadata(parameterMetadataKey, this);
-  }
-
-  getParameters(): ParameterMetadata[] {
-    return this.parameters;
-  }
+  constructor() {}
 
   abstract getPlateCurrent(vg: number, vp: number): number
 
   paramsChanged = new EventEmitter<void>();
   [index: string]: any;
 
+}
+
+export function getParameters(model: any): ParameterMetadata[] {
+  return Reflect.getMetadata(parameterMetadataKey, model);
 }
 
 const parameterMetadataKey = 'model-parameter';

@@ -1,8 +1,10 @@
+import { ParameterMetadata } from './model/models/interfaces/model-parameter';
 import { DempwolfZolzer } from './model/models/dempwolf-zolzer';
 import { Koren } from './model/models/koren';
-import { TriodeModel } from './model/triode-model';
+import { getParameters, TriodeModel } from './model/triode-model';
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
+import { Settings } from './model/settings';
 
 @Component({
   selector: 'app-root',
@@ -11,16 +13,13 @@ import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 })
 export class AppComponent {
 
-  public model: TriodeModel;
-  public opacity: number = 1;
-  public imageUrl: SafeUrl = "";
-  public maxVoltage: number = 400;
-  public maxCurrent: number = .009;
+  public model: TriodeModel = new Koren();
 
-  constructor(private sanitizer: DomSanitizer) {
-    this.model = new Koren();
-    //  this.model = new DempwolfZolzer();
-  }
+  public settings = new Settings();
+
+  public imageUrl: SafeUrl = "";
+
+  constructor(private sanitizer: DomSanitizer) {}
 
   onPaste(e: ClipboardEvent) {
 

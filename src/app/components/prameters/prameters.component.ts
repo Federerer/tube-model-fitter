@@ -1,4 +1,4 @@
-import { TriodeModel } from './../../model/triode-model';
+import { getParameters, TriodeModel } from './../../model/triode-model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelParameter, ParameterMetadata } from 'src/app/model/models/interfaces/model-parameter';
 import { mode } from 'd3';
@@ -8,25 +8,21 @@ import { mode } from 'd3';
   templateUrl: './prameters.component.html',
   styleUrls: ['./prameters.component.scss']
 })
-export class PrametersComponent implements OnInit {
+export class PrametersComponent {
 
-  @Input() model?: TriodeModel;
+  private _model: any;
 
-  public parameters?: ParameterMetadata[];
+  @Input() set model(value: any) {
+    this._model = value;
+    this.parameters = getParameters(value);
+  }
+
+  get model() {
+    return this._model;
+  }
+
+   parameters?: ParameterMetadata[];
 
   constructor() { }
-
-  onChange(name: string, value: string) {
-    this.model![name] = Number(value);
-  }
-
-  ngOnInit(): void {
-    if(!this.model){
-      return;
-    }
-
-     this.parameters = this.model.getParameters();
-
-  }
 
 }

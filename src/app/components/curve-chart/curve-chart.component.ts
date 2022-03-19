@@ -1,5 +1,5 @@
 import { TriodeModel } from './../../model/triode-model';
-import { AfterViewInit, Component, ElementRef, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
 import * as d3 from 'd3';
 import { BehaviorSubject, combineLatest, filter, map, merge, NEVER, of, startWith, Subject, switchMap, withLatestFrom } from 'rxjs';
 
@@ -8,20 +8,12 @@ import { BehaviorSubject, combineLatest, filter, map, merge, NEVER, of, startWit
   templateUrl: './curve-chart.component.html',
   styleUrls: ['./curve-chart.component.scss']
 })
-export class CurveChartComponent {
+export class CurveChartComponent implements OnChanges {
 
-  private _maxVoltage: number = 250;
-  @Input() public set maxVoltage(value: number) {
-    this._maxVoltage = value;
-    this.render();
-  };
-
-  private _maxCurrent: number = .1;
-  @Input() public set maxCurrent(value: number) {
-    this._maxCurrent = value;
-    this.render();
-  };
-
+  @Input() maxVoltage: number = 250;
+  @Input() maxCurrent: number = .1;
+  @Input() gridVoltages: number = 5;
+  @Input() gridSpacing: number = .5;
 
   private _model = new BehaviorSubject<TriodeModel | null>(null);
   private _size = new BehaviorSubject<{ width: number, height: number } | null>(null);
@@ -45,6 +37,10 @@ export class CurveChartComponent {
     ).subscribe(() => this.render());
   }
 
+  ngOnChanges(changes: SimpleChanges): void {
+    this.render();
+  }
+
   public OnResize(event: { width: number, height: number }) {
     this._size.next(event);
   }
@@ -66,11 +62,11 @@ export class CurveChartComponent {
     svg.selectAll("*").remove();
 
     const x = d3.scaleLinear()
-      .domain([0, this._maxVoltage])
+      .domain([0, this.maxVoltage])
       .range([0, width]);
 
     const y = d3.scaleLinear()
-      .domain([0, this._maxCurrent])
+      .domain([0, this.maxCurrent])
       .range([height, 0]);
 
     svg.append('g')
@@ -82,13 +78,14 @@ export class CurveChartComponent {
       .attr('class', 'grid')
       .call(d3.axisLeft(y));
 
-    const vgs = d3.range(1.2, -4, -.5);
+    const spacing = -Math.abs(this.gridSpacing);
+    const vgs = d3.range(0, spacing * this.gridVoltages, spacing);
 
     const lines = vgs.map(vg =>
     ({
       vg,
       fn: d3.line()
-        .defined(v => v[1] <= this._maxCurrent)
+        .defined(v => v[1] <= this.maxCurrent)
         .x(v => x(v[0]))
         .y(v => y(v[1])),
       color: vg > 0 ? 'red' : 'blue'
@@ -96,7 +93,7 @@ export class CurveChartComponent {
 
     const lineArea = svg.append('g');
 
-    const pts = d3.range(0, this._maxVoltage + 1, 5);
+    const pts = d3.range(0, this.maxVoltage + 1, 5);
 
     for (const line of lines) {
       lineArea.append("path")
