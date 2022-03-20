@@ -1,5 +1,5 @@
 <div *ngFor="let param of parameters" class="wrapper" >
   <label class="name">{{param.name}}</label>
-  <input class="slider" type="range" min="{{param.default / 2}}" max="{{param.default * 2}}" [(ngModel)]="model![param.key]" step="any">
+  <input class="slider" type="range" [min]="param.range ? param.range.min : param.default / 2" [max]="param.range ? param.range.max : param.default * 2" [(ngModel)]="model![param.key]" [step]="param.stepSize ?? 'any'">
   <input class="value" type="number" [(ngModel)]="model![param.key]">
 </div>

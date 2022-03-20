@@ -54,6 +54,6 @@ export function Parameter(info: ModelParameter): PropertyDecorator {
         Reflect.defineMetadata(parameterMetadataKey, parameters, target);
     }
 
-    parameters.push({...info, key});
+    parameters.push({...info, key });
   };
 }
