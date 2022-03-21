@@ -18,6 +18,8 @@ export class AppComponent {
 
   public model: TriodeModel;
 
+  public img?: string;
+
   public get modelString() {
     return JSON.stringify({...this.model, paramsChanged: null});
   }
@@ -34,7 +36,7 @@ export class AppComponent {
     this.model = this.models[0];
   }
 
-  onPaste(e: ClipboardEvent) {
+  async onPaste(e: ClipboardEvent) {
 
     const items = e.clipboardData?.items;
 
@@ -45,12 +47,21 @@ export class AppComponent {
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
         const blob = item.getAsFile();
+        this.img = await blobToBase64(blob!);
         if (blob) {
           this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
             URL.createObjectURL(blob)
           );
         }
       }
+    }
+
+    function blobToBase64(blob: File): Promise<string> {
+      return new Promise((resolve, _) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(<string>reader.result);
+        reader.readAsDataURL(blob);
+      });
     }
 
   }

@@ -1,12 +1,12 @@
-import { getParameters, TriodeModel } from './../../model/triode-model';
+import { getParameters, TriodeModel } from '../../model/triode-model';
 import { Component, Input, OnInit } from '@angular/core';
 import { ModelParameter, ParameterMetadata } from 'src/app/model/models/interfaces/model-parameter';
 import { mode } from 'd3';
 
 @Component({
-  selector: 'app-prameters',
-  templateUrl: './prameters.component.html',
-  styleUrls: ['./prameters.component.scss']
+  selector: 'app-parameters',
+  templateUrl: './parameters.component.html',
+  styleUrls: ['./parameters.component.scss']
 })
 export class PrametersComponent {
 

@@ -10,7 +10,8 @@
     <option *ngFor="let m of models" [ngValue]="m">{{m.name}}</option>
   </select>
   <h3>Model parameters</h3>
-  <app-prameters *ngIf="model" [model]="model"></app-prameters>
+  <app-parameters *ngIf="model" [model]="model"></app-parameters>
   <h3>Settings</h3>
-  <app-prameters [model]="settings"></app-prameters>
+  <app-parameters [model]="settings"></app-parameters>
+  <textarea [textContent]="img"></textarea>
 </div>

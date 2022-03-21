@@ -8,7 +8,7 @@ import { OnResizeDirective } from './directives/on-resize.directive';
 
 import { ResizableModule } from 'angular-resizable-element';
 import { ResizeBoxComponent } from './components/resize-box/resize-box.component';
-import { PrametersComponent } from './components/prameters/prameters.component';
+import { PrametersComponent } from './components/parameters/parameters.component';
 import { FormsModule } from '@angular/forms';
 
 @NgModule({
