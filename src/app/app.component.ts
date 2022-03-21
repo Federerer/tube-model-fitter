@@ -5,6 +5,7 @@ import { getParameters, TriodeModel } from './model/triode-model';
 import { Component } from '@angular/core';
 import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
 import { Settings } from './model/settings';
+import { json } from 'd3';
 
 @Component({
   selector: 'app-root',
@@ -13,13 +14,25 @@ import { Settings } from './model/settings';
 })
 export class AppComponent {
 
-  public model: TriodeModel = new Koren();
+  public models: TriodeModel[];
+
+  public model: TriodeModel;
+
+  public get modelString() {
+    return JSON.stringify({...this.model, paramsChanged: null});
+  }
 
   public settings = new Settings();
 
   public imageUrl: SafeUrl = "";
 
-  constructor(private sanitizer: DomSanitizer) {}
+  constructor(private sanitizer: DomSanitizer) {
+    this.models = [
+      new Koren(),
+      new DempwolfZolzer()
+    ]
+    this.model = this.models[0];
+  }
 
   onPaste(e: ClipboardEvent) {
 

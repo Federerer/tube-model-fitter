@@ -1,12 +1,16 @@
 <div class="curves" (paste)="onPaste($event)" tabindex="0">
   <img *ngIf="imageUrl" [src]="imageUrl" class="image" [style.opacity]="settings.opacity">
   <app-resize-box>
-    <app-curve-chart [maxCurrent]="settings.maxCurrent" [maxVoltage]="settings.maxVoltage" [model]="model" [gridSpacing]="settings.gridSpacing" [gridVoltages]="settings.gridVoltages"></app-curve-chart>
+    <app-curve-chart *ngIf="model" [maxCurrent]="settings.maxCurrent" [maxVoltage]="settings.maxVoltage" [model]="model" [gridSpacing]="settings.gridSpacing" [gridVoltages]="settings.gridVoltages"></app-curve-chart>
   </app-resize-box>
 </div>
 <div class="controls">
+  <label>Model</label>
+  <select [(ngModel)]="model">
+    <option *ngFor="let m of models" [ngValue]="m">{{m.name}}</option>
+  </select>
   <h3>Model parameters</h3>
-  <app-prameters [model]="model"></app-prameters>
+  <app-prameters *ngIf="model" [model]="model"></app-prameters>
   <h3>Settings</h3>
   <app-prameters [model]="settings"></app-prameters>
 </div>
