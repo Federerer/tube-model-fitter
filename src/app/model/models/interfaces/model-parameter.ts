@@ -3,7 +3,7 @@ export interface ModelParameter {
   description?: string;
   default: number;
   range?: { min: number, max: number }
-  stepSize?: number | 'any'
+  stepSize?: number
 }
 
 export interface ParameterMetadata extends ModelParameter {

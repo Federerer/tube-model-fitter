@@ -10,6 +10,7 @@ import { ResizableModule } from 'angular-resizable-element';
 import { ResizeBoxComponent } from './components/resize-box/resize-box.component';
 import { PrametersComponent } from './components/parameters/parameters.component';
 import { FormsModule } from '@angular/forms';
+import { ParameterComponent } from './components/parameter/parameter.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +18,8 @@ import { FormsModule } from '@angular/forms';
     CurveChartComponent,
     OnResizeDirective,
     ResizeBoxComponent,
-    PrametersComponent
+    PrametersComponent,
+    ParameterComponent
   ],
   imports: [
     BrowserModule,

@@ -2,7 +2,7 @@ import { Parameter } from "./triode-model";
 
 export class Settings {
 
-  @Parameter({ name: "Image opacity", default: .5, range: { min: 0, max: 1 } })
+  @Parameter({ name: "Image opacity", default: .5, stepSize: .01, range: { min: 0, max: 1 } })
   opacity!: number;
 
   @Parameter({ name: "Maximum voltage", default: 400, stepSize: 10 })

@@ -21,7 +21,7 @@ export class PrametersComponent {
     return this._model;
   }
 
-   parameters?: ParameterMetadata[];
+  parameters?: ParameterMetadata[];
 
   constructor() { }
 

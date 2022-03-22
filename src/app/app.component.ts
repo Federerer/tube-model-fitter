@@ -1,4 +1,3 @@
-import { ParameterMetadata } from './model/models/interfaces/model-parameter';
 import { DempwolfZolzer } from './model/models/dempwolf-zolzer';
 import { Koren } from './model/models/koren';
 import { getParameters, TriodeModel } from './model/triode-model';
@@ -17,12 +16,6 @@ export class AppComponent {
   public models: TriodeModel[];
 
   public model: TriodeModel;
-
-  public img?: string;
-
-  public get modelString() {
-    return JSON.stringify({...this.model, paramsChanged: null});
-  }
 
   public settings = new Settings();
 
@@ -47,21 +40,12 @@ export class AppComponent {
     for (const item of items) {
       if (item.type.indexOf('image') === 0) {
         const blob = item.getAsFile();
-        this.img = await blobToBase64(blob!);
         if (blob) {
           this.imageUrl = this.sanitizer.bypassSecurityTrustUrl(
             URL.createObjectURL(blob)
           );
         }
       }
-    }
-
-    function blobToBase64(blob: File): Promise<string> {
-      return new Promise((resolve, _) => {
-        const reader = new FileReader();
-        reader.onloadend = () => resolve(<string>reader.result);
-        reader.readAsDataURL(blob);
-      });
     }
 
   }

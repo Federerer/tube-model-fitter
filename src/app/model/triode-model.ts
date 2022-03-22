@@ -38,7 +38,6 @@ export function Parameter(info: ModelParameter): PropertyDecorator {
       get: function(this: TriodeModel) { return this[newKey] ?? info.default },
       set: function(this: TriodeModel, newVal) {
         this[newKey] = newVal;
-        console.log(`Parameter ${key.toString()} changed: ${newVal}`)
         this.paramsChanged?.emit();
       },
       enumerable: true,

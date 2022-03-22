@@ -1,0 +1,3 @@
+<label>{{label}}</label>
+<input type="range" [min]="sliderRange.min" [max]="sliderRange.max" [(ngModel)]="value" [step]="stepSize ?? 'any'">
+<input type="number" [(ngModel)]="value" [step]="stepSize" [min]="range?.min ?? null" [max]="range?.max ?? null" (ngModelChange)="onTextInput($event)">
